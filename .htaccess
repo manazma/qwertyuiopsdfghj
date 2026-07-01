@@ -1,0 +1,60 @@
+# ===============================
+# KEAMANAN DASAR
+# ===============================
+
+# Matikan directory listing
+Options -Indexes
+
+# Lindungi file konfigurasi & sensitif
+<FilesMatch "\.(env|log|ini|conf|config|sql|bak|backup|zip|rar|tar|gz|7z)$">
+  Order allow,deny
+  Deny from all
+</FilesMatch>
+
+# Blok akses ke .htaccess itu sendiri
+<Files .htaccess>
+  Order allow,deny
+  Deny from all
+</Files>
+
+# ===============================
+# KEAMANAN REQUEST
+# ===============================
+
+# Blok metode HTTP berbahaya
+<LimitExcept GET POST>
+  Deny from all
+</LimitExcept>
+
+# ===============================
+# KEAMANAN HEADER
+# ===============================
+
+<IfModule mod_headers.c>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set X-XSS-Protection "1; mode=block"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# ===============================
+# DEFAULT INDEX
+# ===============================
+
+DirectoryIndex index.php index.html
+
+# ===============================
+# PROTEKSI FILE PHP
+# ===============================
+
+# Cegah eksekusi PHP di folder assets/css/js
+<DirectoryMatch "^.*/(assets|css|js)/">
+  php_flag engine off
+</DirectoryMatch>
+
+# ===============================
+# ERROR HANDLING (OPSIONAL)
+# ===============================
+
+ErrorDocument 403 /index.html
+ErrorDocument 404 /index.html
